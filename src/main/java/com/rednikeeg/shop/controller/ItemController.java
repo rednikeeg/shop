@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(path = "/api/1.0/item", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/item", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ItemController {
     @Autowired
     private ItemService itemService;
