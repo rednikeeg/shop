@@ -5,14 +5,13 @@ import com.rednikeeg.shop.service.ItemService;
 import com.rednikeeg.shop.util.ItemTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping(path = "/api/1.0/item", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ItemController {
     @Autowired
@@ -20,7 +19,7 @@ public class ItemController {
     @Autowired
     private ItemTransformer itemTransformer;
 
-    @GetMapping
+    @GetMapping("/get/all")
     @ResponseBody
     public List<ItemDto> getAll() {
         return itemService.getAll()
@@ -29,49 +28,41 @@ public class ItemController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping
+    @PostMapping(path = "/create")
     @ResponseBody
-    public ItemDto save(ItemDto item) {
+    public ItemDto save(@RequestBody ItemDto item) {
         return Optional.of(item)
                 .map(itemTransformer::toEntity)
                 .map(itemService::save)
                 .map(itemTransformer::toDto)
-                .orElseThrow(() -> {
-                    throw new IllegalArgumentException("Item " + item + " cannot be saved.");
-                });
+                .orElseThrow(() -> new IllegalArgumentException("Item " + item + " cannot be saved."));
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/get/{id}")
     @ResponseBody
     public ItemDto get(@PathVariable Long id) {
         return Optional.of(id)
                 .map(itemService::getById)
                 .map(itemTransformer::toDto)
-                .orElseThrow(() -> {
-                    throw new IllegalArgumentException("Item with id " + id + " cannot be found.");
-                });
+                .orElseThrow(() -> new IllegalArgumentException("Item with id " + id + " cannot be found."));
     }
 
-    @PutMapping
+    @PutMapping(path = "/update")
     @ResponseBody
-    public ItemDto update(ItemDto item) {
+    public ItemDto update(@RequestBody ItemDto item) {
         return Optional.of(item)
                 .map(itemTransformer::toEntity)
                 .map(itemService::update)
                 .map(itemTransformer::toDto)
-                .orElseThrow(() -> {
-                    throw new IllegalArgumentException("Item " + item + " cannot be updated.");
-                });
+                .orElseThrow(() -> new IllegalArgumentException("Item " + item + " cannot be updated."));
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "delete/{id}")
     @ResponseBody
     public ItemDto delete(@PathVariable Long id) {
         return Optional.of(id)
                 .map(itemService::deleteById)
                 .map(itemTransformer::toDto)
-                .orElseThrow(() -> {
-                    throw new IllegalArgumentException("Item with id " + id + " cannot be deleted.");
-                });
+                .orElseThrow(() -> new IllegalArgumentException("Item with id " + id + " cannot be deleted."));
     }
 }
