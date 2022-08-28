@@ -1,5 +1,6 @@
 package com.rednikeeg.shop;
 
+import com.rednikeeg.shop.config.AppConfig;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -12,7 +13,7 @@ public class Application implements WebApplicationInitializer {
     @Override
     public void onStartup(ServletContext container) {
         AnnotationConfigWebApplicationContext appContext = new AnnotationConfigWebApplicationContext();
-        appContext.register(ApplicationConfig.class);
+        appContext.register(AppConfig.class);
 
         container.addListener(new ContextLoaderListener(appContext));
 
