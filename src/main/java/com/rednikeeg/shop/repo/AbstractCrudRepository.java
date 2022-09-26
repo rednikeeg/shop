@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractCrudRepository<T extends Entity<Long>> implements CrudRepository<Long, T> {
-    private List<T> content = new ArrayList<>();
+    protected List<T> content = new ArrayList<>();
     private Long nextId = 1L;
 
     @Override
@@ -20,8 +20,9 @@ public abstract class AbstractCrudRepository<T extends Entity<Long>> implements 
         T saved = null;
 
         if (toSave.getId() == null) {
-            toSave.setId(nextId++);
             saved = toSave;
+            saved.setId(nextId++);
+            content.add(saved);
         }
 
         return saved;

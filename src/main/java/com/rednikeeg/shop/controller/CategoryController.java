@@ -20,7 +20,7 @@ public class CategoryController {
     @Autowired
     private CategoryTransformer categoryTransformer;
 
-    @GetMapping(path = "/getAll")
+    @GetMapping(path = "/get/all")
     @ResponseBody
     public List<CategoryDto> getAll() {
         return categoryService.getAll()
@@ -39,7 +39,7 @@ public class CategoryController {
                 .orElseThrow(() -> new IllegalArgumentException("Category " + category + "cannot be saved."));
     }
 
-    @GetMapping(path = "/get/{id}")
+    @GetMapping(path = "/getById/:{id}")
     @ResponseBody
     public CategoryDto getById(@PathVariable Long id) {
         return Optional.of(id)
@@ -58,7 +58,7 @@ public class CategoryController {
                 .orElseThrow(() -> new IllegalArgumentException("Category " + category + " cannot be updated."));
     }
 
-    @DeleteMapping(path = "/delete/{id}")
+    @DeleteMapping(path = "/delete/:{id}")
     @ResponseBody
     public CategoryDto deleteById(@PathVariable Long id) {
         return Optional.of(id)

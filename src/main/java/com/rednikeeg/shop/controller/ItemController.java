@@ -38,13 +38,22 @@ public class ItemController {
                 .orElseThrow(() -> new IllegalArgumentException("Item " + item + " cannot be saved."));
     }
 
-    @GetMapping(path = "/get/{id}")
+    @GetMapping(path = "/getById/:{id}")
     @ResponseBody
-    public ItemDto get(@PathVariable Long id) {
+    public ItemDto getById(@PathVariable Long id) {
         return Optional.of(id)
                 .map(itemService::getById)
                 .map(itemTransformer::toDto)
                 .orElseThrow(() -> new IllegalArgumentException("Item with id " + id + " cannot be found."));
+    }
+
+    @GetMapping(path = "/getByCategoryId/:{id}")
+    @ResponseBody
+    public List<ItemDto> getByCategoryId(@PathVariable Long id) {
+        return itemService.getByCategoryId(id)
+                .stream()
+                .map(itemTransformer::toDto)
+                .collect(Collectors.toList());
     }
 
     @PutMapping(path = "/update")
@@ -57,7 +66,7 @@ public class ItemController {
                 .orElseThrow(() -> new IllegalArgumentException("Item " + item + " cannot be updated."));
     }
 
-    @DeleteMapping(path = "delete/{id}")
+    @DeleteMapping(path = "delete/:{id}")
     @ResponseBody
     public ItemDto delete(@PathVariable Long id) {
         return Optional.of(id)
