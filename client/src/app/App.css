@@ -1,0 +1,57 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+ul {
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+  color: #0c5c3e;
+}
+
+.list-element {
+  background-color: #b2c5ff;
+
+  border-style: solid;
+  border-color: #8c99a1;
+}
+
+.navbar-element {
+  border-style: solid;
+  border-block: 1px;
+}
+
+form {
+  text-align: left;
+}
+
+input {
+  font-size: inherit;
+}
+
+input[type=text] {
+  border-color: #f3e1b3;
+  border-width: 2px;
+}
+
+input[type=submit] {
+  width: 100%;
+  border-width: 1pt;
+}
