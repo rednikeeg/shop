@@ -3,6 +3,7 @@ package com.rednikeeg.shop.controller;
 import com.rednikeeg.shop.dto.ItemDto;
 import com.rednikeeg.shop.service.ItemService;
 import com.rednikeeg.shop.util.ItemTransformer;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -12,23 +13,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(path = "/api/item", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequestMapping(path = "/api/items", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ItemController {
-    @Autowired
-    private ItemService itemService;
-    @Autowired
-    private ItemTransformer itemTransformer;
+    private final ItemService itemService;
+    private final ItemTransformer itemTransformer;
 
-    @GetMapping("/get/all")
-    @ResponseBody
-    public List<ItemDto> getAll() {
-        return itemService.getAll()
-                .stream()
-                .map(itemTransformer::toDto)
-                .collect(Collectors.toList());
-    }
-
-    @PostMapping(path = "/create")
+    @PostMapping
     @ResponseBody
     public ItemDto save(@RequestBody ItemDto item) {
         return Optional.of(item)
@@ -38,7 +29,16 @@ public class ItemController {
                 .orElseThrow(() -> new IllegalArgumentException("Item " + item + " cannot be saved."));
     }
 
-    @GetMapping(path = "/getById/:{id}")
+    @GetMapping
+    @ResponseBody
+    public List<ItemDto> getAll() {
+        return itemService.getAll()
+                .stream()
+                .map(itemTransformer::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(path = "/:{id}")
     @ResponseBody
     public ItemDto getById(@PathVariable Long id) {
         return Optional.of(id)
@@ -47,31 +47,30 @@ public class ItemController {
                 .orElseThrow(() -> new IllegalArgumentException("Item with id " + id + " cannot be found."));
     }
 
-    @GetMapping(path = "/getByCategoryId/:{id}")
+    @PutMapping(path = "/:{id}")
     @ResponseBody
-    public List<ItemDto> getByCategoryId(@PathVariable Long id) {
-        return itemService.getByCategoryId(id)
-                .stream()
-                .map(itemTransformer::toDto)
-                .collect(Collectors.toList());
-    }
-
-    @PutMapping(path = "/update")
-    @ResponseBody
-    public ItemDto update(@RequestBody ItemDto item) {
-        return Optional.of(item)
+    public ItemDto update(@PathVariable Long id, @RequestBody ItemDto item) {
+        return Optional.of(formUpdatedItem(id, item))
                 .map(itemTransformer::toEntity)
                 .map(itemService::update)
                 .map(itemTransformer::toDto)
                 .orElseThrow(() -> new IllegalArgumentException("Item " + item + " cannot be updated."));
     }
 
-    @DeleteMapping(path = "delete/:{id}")
+    @DeleteMapping(path = "/:{id}")
     @ResponseBody
     public ItemDto delete(@PathVariable Long id) {
         return Optional.of(id)
                 .map(itemService::deleteById)
                 .map(itemTransformer::toDto)
                 .orElseThrow(() -> new IllegalArgumentException("Item with id " + id + " cannot be deleted."));
+    }
+
+    private ItemDto formUpdatedItem(Long id, ItemDto item) {
+        return getById(id)
+                .setName(item.getName())
+                .setDescription(item.getDescription())
+                .setCategory(item.getCategory())
+                .setQuantity(item.getQuantity());
     }
 }

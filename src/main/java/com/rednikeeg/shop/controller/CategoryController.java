@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(path = "/api/category", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/categories", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CategoryController {
 
     @Autowired
@@ -20,7 +20,7 @@ public class CategoryController {
     @Autowired
     private CategoryTransformer categoryTransformer;
 
-    @GetMapping(path = "/get/all")
+    @GetMapping
     @ResponseBody
     public List<CategoryDto> getAll() {
         return categoryService.getAll()
@@ -29,7 +29,7 @@ public class CategoryController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping(path = "/create")
+    @PostMapping
     @ResponseBody
     public CategoryDto save(@RequestBody CategoryDto category) {
         return Optional.of(category)
@@ -39,7 +39,7 @@ public class CategoryController {
                 .orElseThrow(() -> new IllegalArgumentException("Category " + category + "cannot be saved."));
     }
 
-    @GetMapping(path = "/getById/:{id}")
+    @GetMapping(path = "/:{id}")
     @ResponseBody
     public CategoryDto getById(@PathVariable Long id) {
         return Optional.of(id)
@@ -48,9 +48,9 @@ public class CategoryController {
                 .orElseThrow(() -> new IllegalArgumentException("Category with id " + id + " cannot be found."));
     }
 
-    @PutMapping(path = "/update")
+    @PutMapping(path = ":{id}")
     @ResponseBody
-    public CategoryDto update(@RequestBody CategoryDto category) {
+    public CategoryDto update(@PathVariable Long id, @RequestBody CategoryDto category) {
         return Optional.of(category)
                 .map(categoryTransformer::toEntity)
                 .map(categoryService::update)
@@ -58,7 +58,7 @@ public class CategoryController {
                 .orElseThrow(() -> new IllegalArgumentException("Category " + category + " cannot be updated."));
     }
 
-    @DeleteMapping(path = "/delete/:{id}")
+    @DeleteMapping(path = "/:{id}")
     @ResponseBody
     public CategoryDto deleteById(@PathVariable Long id) {
         return Optional.of(id)
